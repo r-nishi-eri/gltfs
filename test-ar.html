@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>A-Frame AR SLAM Plane Detection</title>
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+</head>
+<body>
+  <a-scene
+    arjs="sourceType: webcam; debugUIEnabled: false;"
+    vr-mode-ui="enabled: false"
+  >
+    <!-- Lighting -->
+    <a-light type="ambient" color="#888"></a-light>
+    <a-light type="directional" position="3 4 -2" intensity="1" target="#model"></a-light>
+
+    <!-- Ground Plane (for placement) -->
+    <a-plane
+      id="ground"
+      position="0 0 0"
+      rotation="-90 0 0"
+      width="10"
+      height="10"
+      visible="false"
+    ></a-plane>
+
+    <!-- GLTF Model with Animation -->
+    <a-entity
+      id="model"
+      gltf-model="https://raw.githubusercontent.com/r-nishi-eri/gltfs/main/Kabigon3.gltf"
+      scale="2 2 2"
+      position="0 0 -3"
+      animation__swing="property: rotation; to: 0 20 0; loop: true; dir: alternate; dur: 1000"
+      animation__hop="property: position; to: 0 0.75 0; dir: alternate; dur: 1000; startEvents: hop"
+    ></a-entity>
+
+    <!-- Tap on the ground to place the model -->
+    <a-plane
+      id="placementMarker"
+      position="0 0 0"
+      rotation="-90 0 0"
+      width="0.1"
+      height="0.1"
+      material="visible: false; transparent: true; opacity: 0;"
+      cursor-listener
+    ></a-plane>
+
+    <!-- Add a button to trigger the hop animation -->
+    <button onclick="document.querySelector('#model').emit('hop')">Hop</button>
+  </a-scene>
+
+  <script>
+    AFRAME.registerComponent('cursor-listener', {
+      init: function () {
+        this.el.addEventListener('click', (event) => {
+          const ground = document.querySelector('#ground');
+          const marker = document.querySelector('#placementMarker');
+
+          if (ground && marker) {
+            const intersection = event.detail.intersection;
+            ground.object3D.position.copy(intersection.point);
+            marker.object3D.position.copy(intersection.point);
+            document.querySelector('#model').setAttribute('position', {
+              x: intersection.point.x,
+              y: 0.75,
+              z: intersection.point.z
+            });
+            marker.emit('hop');
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
