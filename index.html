@@ -5,21 +5,24 @@
   <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
 </head>
 <body>
-  <a-scene>
+  <a-scene
+    arjs="sourceType: webcam; debugUIEnabled: false;"
+    vr-mode-ui="enabled: false"
+  >
 
     <!-- Sky -->
-    <a-sky color="#FFDAB9"></a-sky>
+    <!-- <a-sky color="#FFDAB9"></a-sky> -->
 
-    <a-plane
+    <!-- <a-plane
       position="0 0 -3"
       rotation="-90 0 0"
       width="10"
       height="10"
       color="#333"
-    ></a-plane>
+    ></a-plane> -->
 
-    <a-light type="ambient" color="#FFDAB9"></a-light>
-    <a-light type="directional" position="3 4 -2" intensity="1" target="#model"></a-light>
+    <a-light type="ambient" color="#FFDAB9" intensity="2"></a-light>
+    <!-- <a-light type="directional" position="2 3 2" intensity="1.5" target="#model"></a-light> -->
 
     <a-entity
       gltf-model="https://raw.githubusercontent.com/r-nishi-eri/gltfs/main/Kabigon3.gltf"
@@ -27,6 +30,14 @@
       position="0 0 -2"
       animation__swing="property: rotation; to: 20 0 0; loop: true; dir: alternate; dur: 1000"
     ></a-entity>
+
+    <a-entity
+    gltf-model="https://raw.githubusercontent.com/r-nishi-eri/gltfs/main/Hitokage3.gltf"
+    scale="2.5 2.5 2.5"
+    position="-1 0 -2"
+    animation__hop="property: position; to: -1 0.1 -2; loop: true; dir: alternate; dur: 100"
+    ></a-entity>
+
 
    </a-scene>
 </body>
