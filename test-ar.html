@@ -1,83 +1,31 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-  <title>A-Frame AR SLAM Plane Detection</title>
-  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
+    <title>A-Frame AR Ground</title>
 </head>
-<body>
-  <a-scene
-    arjs="sourceType: webcam; debugUIEnabled: false;"
-    vr-mode-ui="enabled: false"
-  >
-    <!-- Lighting -->
-    <a-light type="ambient" color="#FFDAB9" intensity="2"></a-light>
-    
-    <!-- Ground Plane (for placement) -->
-    <a-plane
-      id="ground"
-      position="0 0 0"
-      rotation="-90 0 0"
-      width="10"
-      height="10"
-      visible="false"
-    ></a-plane>
 
-    <!-- GLTF Model with Animation -->
-    <a-entity
-      id="model1"
-      gltf-model="https://raw.githubusercontent.com/r-nishi-eri/gltfs/main/Kabigon3.gltf"
-      scale="2 2 2"
-      position="0 0 -3"
-      animation__swing="property: rotation; to: 0 20 0; loop: true; dir: alternate; dur: 1000"
-    ></a-entity>
+<body style="margin: 0; overflow: hidden;">
 
-    <a-entity
-      id="model2"
-      gltf-model="https://raw.githubusercontent.com/r-nishi-eri/gltfs/main/Hitokage3.gltf"
-      scale="2.5 2.5 2.5"
-      position="-1 0 -3"
-      animation__hop="property: position; to: -1 0.1 -3; loop: true; dir: alternate; dur: 100"
-    ></a-entity>
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
+        <!-- Your GLTF model -->
+        <a-assets>
+            <a-asset-item id="gltf-model" src="https://raw.githubusercontent.com/r-nishi-eri/gltfs/main/Kabigon3.gltf"></a-asset-item>
+        </a-assets>
 
-    <!-- Tap on the ground to place the model -->
-    <a-plane
-      id="placementMarker"
-      position="0 0 0"
-      rotation="-90 0 0"
-      width="0.1"
-      height="0.1"
-      material="visible: false; transparent: true; opacity: 0;"
-      cursor-listener
-    ></a-plane>
+        <!-- Use anchor to detect ground and place the model -->
+        <a-anchor hit-testing-enabled="true">
+            <a-entity gltf-model="#gltf-model" scale="2 2 2" position="0 0.5 0"></a-entity>
+        </a-anchor>
 
-  </a-scene>
+        <!-- Camera to view the AR content -->
+        <a-camera></a-camera>
+    </a-scene>
 
-  <script>
-    AFRAME.registerComponent('cursor-listener', {
-      init: function () {
-        this.el.addEventListener('click', (event) => {
-          const ground = document.querySelector('#ground');
-          const marker = document.querySelector('#placementMarker');
-
-          if (ground && marker) {
-            const intersection = event.detail.intersection;
-            ground.object3D.position.copy(intersection.point);
-            marker.object3D.position.copy(intersection.point);
-            document.querySelector('#model1').setAttribute('position', {
-              x: intersection.point.x-0.5,
-              y: intersection.point.y,
-              z: intersection.point.z
-            });
-            document.querySelector('#model2').setAttribute('position', {
-              x: intersection.point.x+0.5,
-              y: intersection.point.y,
-              z: intersection.point.z
-            });
-          }
-        });
-      }
-    });
-  </script>
 </body>
+
 </html>
